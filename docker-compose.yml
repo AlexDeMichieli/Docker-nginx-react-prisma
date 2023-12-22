@@ -5,13 +5,27 @@ services:
     build:
       context: ./frontend # Use the current directory as the build context
       dockerfile: Dockerfile # Use the Dockerfile defined above
-    ports:
-      - "80:80" # Map port 80 in the container to port 80 on the host
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
 
   backend:
     image: backend
     build:
       context: ./backend # Path to the backend code
       dockerfile: Dockerfile
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
     ports:
       - "3001:3001"
+  nginx:
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '80:80'
