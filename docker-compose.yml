@@ -1,7 +1,7 @@
 version: '3'
 services:
   frontend:
-    image: production-fullstack-frontend
+    image: frontendreactapp.azurecr.io/frontend
     build:
       context: ./frontend # Use the current directory as the build context
       dockerfile: Dockerfile # Use the Dockerfile defined above
@@ -10,7 +10,7 @@ services:
       - ./frontend:/app
 
   backend:
-    image: backend
+    image: frontendreactapp.azurecr.io/backend
     build:
       context: ./backend # Path to the backend code
       dockerfile: Dockerfile
@@ -20,6 +20,7 @@ services:
     ports:
       - "3001:3001"
   nginx:
+    image: frontendreactapp.azurecr.io/nginx
     depends_on:
       - frontend
       - backend
@@ -29,3 +30,43 @@ services:
       context: ./nginx
     ports:
       - '80:80'
+
+# version: '3'
+# services:
+#   frontend:
+#     image: frontendreactapp.azurecr.io/frontend
+#     build:
+#       context: ./frontend
+#       dockerfile: Dockerfile
+#     volumes:
+#       - shared-data:/app
+
+#   backend:
+#     image: frontendreactapp.azurecr.io/backend
+#     build:
+#       context: ./backend
+#       dockerfile: Dockerfile
+#     volumes:
+#       - shared-data:/app
+#     ports:
+#       - "3001:3001"
+
+#   nginx:
+#     image: frontendreactapp.azurecr.io/nginx
+#     depends_on:
+#       - frontend
+#       - backend
+#     restart: always
+#     build:
+#       dockerfile: Dockerfile
+#       context: ./nginx
+#     ports:
+#       - '80:80'
+
+# volumes:
+#   shared-data:
+#     driver: azure_file
+#     driver_opts:
+#       share_name: fullstackapp22
+#       storage_account_name: fullstackapp22
+#       storage_account_key: gJNl7BqJGqG7y+fbwJWRAx5UwYy3vvTP9cuHAh5r2re6nU507lyvM8I1b70cqwAyByKov4/AHj1D+AStXuZfTw==
