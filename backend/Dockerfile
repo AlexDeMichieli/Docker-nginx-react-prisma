@@ -6,9 +6,13 @@ WORKDIR /app
 
 # Copy the package.json and package-lock.json files to the container
 COPY package*.json ./
+COPY prisma ./prisma/
 
 # Install dependencies
 RUN npm install
+
+# ---- Build ----
+FROM node:16 as build
 
 # Copy the rest of the application code
 COPY . .
