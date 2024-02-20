@@ -1,72 +1,33 @@
-version: '3'
+version: "3.3"
 services:
-  frontend:
-    image: frontendreactapp.azurecr.io/frontend
-    build:
-      context: ./frontend # Use the current directory as the build context
-      dockerfile: Dockerfile # Use the Dockerfile defined above
-    volumes:
-      - /app/node_modules
-      - ./frontend:/app
-
-  backend:
-    image: frontendreactapp.azurecr.io/backend
-    build:
-      context: ./backend # Path to the backend code
-      dockerfile: Dockerfile
-    volumes:
-      - /app/node_modules
-      - ./backend:/app
-    ports:
-      - "3001:3001"
   nginx:
-    image: frontendreactapp.azurecr.io/nginx
     depends_on:
-      - frontend
+      - client
       - backend
-    restart: always
+    restart: always # because it is routing traffic to our entire app
     build:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
       - '80:80'
-
-# version: '3'
-# services:
-#   frontend:
-#     image: frontendreactapp.azurecr.io/frontend
-#     build:
-#       context: ./frontend
-#       dockerfile: Dockerfile
-#     volumes:
-#       - shared-data:/app
-
-#   backend:
-#     image: frontendreactapp.azurecr.io/backend
-#     build:
-#       context: ./backend
-#       dockerfile: Dockerfile
-#     volumes:
-#       - shared-data:/app
-#     ports:
-#       - "3001:3001"
-
-#   nginx:
-#     image: frontendreactapp.azurecr.io/nginx
-#     depends_on:
-#       - frontend
-#       - backend
-#     restart: always
-#     build:
-#       dockerfile: Dockerfile
-#       context: ./nginx
-#     ports:
-#       - '80:80'
-
-# volumes:
-#   shared-data:
-#     driver: azure_file
-#     driver_opts:
-#       share_name: fullstackapp22
-#       storage_account_name: fullstackapp22
-#       storage_account_key: gJNl7BqJGqG7y+fbwJWRAx5UwYy3vvTP9cuHAh5r2re6nU507lyvM8I1b70cqwAyByKov4/AHj1D+AStXuZfTw==
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    #ports:
+    #  - '3000:3000'
+    volumes:
+      - /app/node_modules # Inside the container, don't try to override this folder, just leave as is
+    restart: on-failure
+    container_name: client
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    #ports:
+    #  - '3001:3001'
+    restart: on-failure
+    container_name: backend
+    volumes:
+      - /app/node_modules # Inside the container, don't try to override this folder, just leave as is
+ 
