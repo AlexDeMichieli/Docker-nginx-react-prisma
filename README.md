@@ -4,6 +4,16 @@ The frontend does not have any code, however it was more important for me to mak
 
 Steps:
 
+1. install dependencies.
+
+```bash
+cd backend
+npm install
+cd ..
+cd frontend
+npm install
+```
+
  - To dockerize the production version, run:
 
  ```bash
